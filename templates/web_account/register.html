@@ -1,0 +1,45 @@
+{% extends 'skeleton/base.html'%} {% block body %}
+<div class="h-screen w-screen bg-[#e3e3e3] pt-[15vh]">
+	<form
+		class="bg-white w-[90vw] sm:w-fit sm:p-20 p-10 mx-auto rounded-md shadow-md h-fit"
+		method="post"
+	>
+		{% if error %}
+		<div class="mb-5 text-center py-1 text-red-600 bg-red-50 rounded-md">
+			{{ error }}
+		</div>
+		{% endif %} {% csrf_token %} {% for field in form %}
+		<label>
+			<div
+				class="bg-[#f9f9f9] h-10 flex items-center justify-center max-w-[300px] sm:max-w-[400px] w-[350px] hover:ring-blue-400 [&>i]:hover:text-blue-400 mb-5 relative hover:border-blue-400 m-auto"
+			>
+				<input
+					class="w-full h-full outline-none px-1 placeholder:focus:text-blue-400/75 text-black/90 peer placeholder-shown:border-slate-200 border-b-[2px] border-blue-400 focus:border-blue-400"
+					type="{{ field.field.widget.input_type }}"
+					name="{{ field.name }}"
+					placeholder=" "
+					{%
+					if
+					field.value
+					%}
+					value="{{ field.value }}"
+					{%
+					endif
+					%}
+				/>
+				<div
+					class="absolute top-[-50%] left-1 peer-placeholder-shown:top-[50%] peer-placeholder-shown:translate-y-[-50%] transition-all text-blue-400 text-lg peer-placeholder-shown:text-black/50 peer-focus:text-blue-400"
+				>
+					{{ field.label }}
+				</div>
+			</div>
+		</label>
+		{% endfor %}
+		<button
+			class="h-10 px-3 bg-blue-400 shadow-blue-400 shadow-[0_2px_12px_-3px] rounded-md hover:shadow-[0_0_0_0] transition-all duration-300 scale-105 hover:scale-100 font-bold tracking-wide m-auto mt-10 block text-white"
+		>
+			submit
+		</button>
+	</form>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'skeleton/base.html'%} {% block body %}
+<div class="h-screen w-screen bg-[#e3e3e3] pt-[15vh]">
+	<form
+		class="bg-white w-[90vw] sm:w-fit sm:p-20 p-10 mx-auto rounded-md shadow-md h-fit"
+		method="post"
+	>
+		{% if error %}
+		<div class="mb-5 text-center py-1 text-red-600 bg-red-50 rounded-md">
+			{{ error }}
+		</div>
+		{% endif %} {% csrf_token %} {% for field in form %}
+		{{ field }}
+		<label for="{{ field.auto_id }}">
+			<div class="w-10 h-10 bg-blue-400"></div>
+		</label>
+		{% endfor %}
+		<button
+			class="h-10 px-3 bg-blue-400 shadow-blue-400 shadow-[0_2px_12px_-3px] rounded-md hover:shadow-[0_0_0_0] transition-all duration-300 scale-105 hover:scale-100 font-bold tracking-wide m-auto mt-10 block text-white"
+		>
+			submit
+		</button>
+	</form>
+</div>
+{% endblock %}

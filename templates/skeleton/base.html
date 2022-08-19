@@ -1,0 +1,62 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{ TITLE }}</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/fontawesome.css' %}" />
+	</head>
+	<body>
+		<input id="nav-toggle" type="checkbox" class="peer hidden" />
+		<nav
+			class="fixed top-1/2 left-0 -translate-x-full -translate-y-1/2 border h-[90vh] sm:h-[800px] w-[70vw] sm:w-60 bg-white rounded-[0_30px_30px_0] px-5 flex items-center justify-center flex-col [&>*:not(label)]:w-full z-[999] peer-checked:translate-x-0 transition duration-300 shadow-sm"
+		>
+			<label
+				for="nav-toggle"
+				class="absolute top-1/2 left-full w-10 h-10 border rounded-full -translate-x-1/2 flex items-center justify-center border-white bg-blue-400 shadow-[0_0_5px] shadow-black/20"
+			></label>
+			<div class="flex items-center justify-center py-5">
+				<a href="/">
+					<h2 class="text-3xl font-bold text-center h-fit w-full">Lorem</h2>
+				</a>
+			</div>
+			<div class="h-full">
+				{% for nav in request.nav %}
+				<details class="[&>summary>i]:open:rotate-180">
+					<summary
+						class="border-b font-bold py-2 px-2 flex items-center justify-between"
+					>
+						<h3>{{ nav.name }}</h3>
+						<i class="fa-regular fa-chevron-down transition"></i>
+					</summary>
+					<ul class="my-1 text-gray-600 text-sm">
+						{% for link in nav.links %}
+						<li
+							class="py-2 px-2 hover:text-blue-500 hover:bg-blue-50/50 rounded-md transition"
+						>
+							<a href="{{ link.url }}"
+								>{{ link.icon|safe }}
+								<span class="ml-1">{{ link.name }}</span></a
+							>
+						</li>
+						{% endfor %}
+					</ul>
+				</details>
+				{% endfor %}
+			</div>
+			{% if user.is_authenticated %}
+			<div class="py-5 hover:text-blue-500">
+				<a href="/"><i class="fa-regular fa-gear mr-2"></i>setting</a>
+			</div>
+			{% endif %}
+		</nav>
+		<main
+			class="transition peer-checked:bg-black/10 h-screen peer-checked:blur-xl"
+		>
+			{% block body %} {% endblock %}
+		</main>
+		<script></script>
+	</body>
+</html>
