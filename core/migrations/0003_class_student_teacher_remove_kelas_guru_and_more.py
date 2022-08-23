@@ -9,63 +9,116 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('core', '0002_alter_guru_jenis_kelamin'),
+        ("core", "0002_alter_guru_jenis_kelamin"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Class',
+            name="Class",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('class_name', models.CharField(max_length=20)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("class_name", models.CharField(max_length=20)),
             ],
         ),
         migrations.CreateModel(
-            name='Student',
+            name="Student",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30)),
-                ('phone', models.CharField(blank=True, max_length=10, null=True)),
-                ('gender', models.CharField(choices=[('m', 'man'), ('w', 'woman')], max_length=1)),
-                ('nisn', models.CharField(max_length=20)),
-                ('student_class', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.class')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30)),
+                ("phone", models.CharField(blank=True, max_length=10, null=True)),
+                (
+                    "gender",
+                    models.CharField(
+                        choices=[("m", "man"), ("w", "woman")], max_length=1
+                    ),
+                ),
+                ("nisn", models.CharField(max_length=20)),
+                (
+                    "student_class",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="core.class"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Teacher',
+            name="Teacher",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30)),
-                ('gender', models.CharField(choices=[('m', 'man'), ('w', 'woman')], max_length=1)),
-                ('no_telepon', models.CharField(max_length=10)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30)),
+                (
+                    "gender",
+                    models.CharField(
+                        choices=[("m", "man"), ("w", "woman")], max_length=1
+                    ),
+                ),
+                ("no_telepon", models.CharField(max_length=10)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.RemoveField(
-            model_name='kelas',
-            name='guru',
+            model_name="kelas",
+            name="guru",
         ),
         migrations.RemoveField(
-            model_name='siswa',
-            name='kelas',
+            model_name="siswa",
+            name="kelas",
         ),
         migrations.RemoveField(
-            model_name='siswa',
-            name='user',
+            model_name="siswa",
+            name="user",
         ),
         migrations.DeleteModel(
-            name='Guru',
+            name="Guru",
         ),
         migrations.DeleteModel(
-            name='Kelas',
+            name="Kelas",
         ),
         migrations.DeleteModel(
-            name='Siswa',
+            name="Siswa",
         ),
         migrations.AddField(
-            model_name='class',
-            name='teacher',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.teacher'),
+            model_name="class",
+            name="teacher",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="core.teacher"
+            ),
         ),
     ]

@@ -15,33 +15,85 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Guru',
+            name="Guru",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nama_guru', models.CharField(max_length=30)),
-                ('jenis_kelamin', models.CharField(choices=[('l', 'l'), ('p', 'p')], max_length=2)),
-                ('no_telepon', models.CharField(max_length=10)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nama_guru", models.CharField(max_length=30)),
+                (
+                    "jenis_kelamin",
+                    models.CharField(choices=[("l", "l"), ("p", "p")], max_length=2),
+                ),
+                ("no_telepon", models.CharField(max_length=10)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Kelas',
+            name="Kelas",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name_kelas', models.CharField(max_length=20)),
-                ('guru', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.guru')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name_kelas", models.CharField(max_length=20)),
+                (
+                    "guru",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="core.guru"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Siswa',
+            name="Siswa",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nama_siswa', models.CharField(max_length=30)),
-                ('no_telepon', models.CharField(blank=True, max_length=10, null=True)),
-                ('jenis_kelamin', models.CharField(choices=[('l', 'l'), ('p', 'p')], max_length=2)),
-                ('nisn', models.CharField(max_length=20)),
-                ('kelas', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.kelas')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nama_siswa", models.CharField(max_length=30)),
+                ("no_telepon", models.CharField(blank=True, max_length=10, null=True)),
+                (
+                    "jenis_kelamin",
+                    models.CharField(choices=[("l", "l"), ("p", "p")], max_length=2),
+                ),
+                ("nisn", models.CharField(max_length=20)),
+                (
+                    "kelas",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="core.kelas"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

@@ -1,45 +1,46 @@
-{% extends 'skeleton/base.html'%} {% block body %}
-<div class="h-screen w-screen bg-[#e3e3e3] pt-[15vh]">
-	<form
-		class="bg-white w-[90vw] sm:w-fit sm:p-20 p-10 mx-auto rounded-md shadow-md h-fit"
-		method="post"
-	>
-		{% if error %}
-		<div class="mb-5 text-center py-1 text-red-600 bg-red-50 rounded-md">
-			{{ error }}
-		</div>
-		{% endif %} {% csrf_token %} {% for field in form %}
-		<label>
-			<div
-				class="bg-[#f9f9f9] h-10 flex items-center justify-center max-w-[300px] sm:max-w-[400px] w-[350px] hover:ring-blue-400 [&>i]:hover:text-blue-400 mb-5 relative hover:border-blue-400 m-auto"
-			>
-				<input
-					class="w-full h-full outline-none px-1 placeholder:focus:text-blue-400/75 text-black/90 peer placeholder-shown:border-slate-200 border-b-[2px] border-blue-400 focus:border-blue-400"
-					type="{{ field.field.widget.input_type }}"
-					name="{{ field.name }}"
-					placeholder=" "
-					{%
-					if
-					field.value
-					%}
-					value="{{ field.value }}"
-					{%
-					endif
-					%}
-				/>
-				<div
-					class="absolute top-[-50%] left-1 peer-placeholder-shown:top-[50%] peer-placeholder-shown:translate-y-[-50%] transition-all text-blue-400 text-lg peer-placeholder-shown:text-black/50 peer-focus:text-blue-400"
-				>
+{% extends 'skeleton/base.html' %}
+{% block body %}
+<div class="h-screen w-screen bg-[#e3e3e3]">
+	<div class="flex items-center justify-center p-10 font-bold text-lg">
+		register
+	</div>
+	<form class="px-3" method="post">
+		{% csrf_token %}
+		{% for field in form %}
+		<div class="bg-white shadow-md rounded-md box-content p-5 mb-5">
+			<div class="mb-3">
+				<h3 class="text-lg text-black/80">
 					{{ field.label }}
-				</div>
+					{% if field.field.required %}
+					<span class="text-sm text-red-400">*</span>
+					{% endif %}
+				</h3>
+				<p class="text-sm text-black/50">{{ field.help_text }}</p>
 			</div>
-		</label>
+			{% if field.field.widget.input_type == 'select' %}
+			<select
+				class="w-full h-10 rounded-md transition-all duration-300 outline-none border-[1px] hover:border-b-[2px] hover:border-blue-400"
+				name="{{ field.name }}"
+				{% if field.field.required %}
+				required
+				{% endif %}
+			>
+				{% for option in field.field.widget.choices %}
+				<option value="{{ option.0 }}">{{ option.1 }}</option>
+				{% endfor %}
+			</select>
+			{% else %}
+			<label>
+				<input name="{{ field.name }}" type="{{ field.field.widget.input_type }}" class="w-full outline-none border-b-[2px] focus:border-blue-400">
+			</label>
+			{% endif %}	
+		</div>
 		{% endfor %}
-		<button
-			class="h-10 px-3 bg-blue-400 shadow-blue-400 shadow-[0_2px_12px_-3px] rounded-md hover:shadow-[0_0_0_0] transition-all duration-300 scale-105 hover:scale-100 font-bold tracking-wide m-auto mt-10 block text-white"
-		>
-			submit
-		</button>
+		<button class="px-3 py-2 bg-blue-400 rounded-md shadow-md active:scale-95 active:shadow-none transition-all text-white border">submit</button>
+	</form>
+	<form class="px-3 mt-3" method="post" action="{% url 'account:reset' %}">
+		{% csrf_token %}
+		<button class="px-3 py-2 bg-blue-400 rounded-md shadow-md active:scale-95 active:shadow-none transition-all text-white border">reset</button>
 	</form>
 </div>
 {% endblock %}

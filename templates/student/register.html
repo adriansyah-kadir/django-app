@@ -1,0 +1,46 @@
+{% extends 'skeleton/base.html' %}
+{% block body %}
+<div class="h-screen w-screen bg-[#e3e3e3]">
+	<div class="flex items-center justify-center p-10 font-bold text-lg">
+		student registration
+	</div>
+	<form class="px-3" method="post">
+		{% csrf_token %}
+		{% for field in form %}
+		<div class="bg-white shadow-md rounded-md box-content p-5 mb-5">
+			<div class="mb-3">
+				<h3 class="text-lg text-black/80">
+					{{ field.label }}
+					{% if field.field.required %}
+					<span class="text-sm text-red-400">*</span>
+					{% endif %}
+				</h3>
+				<p class="text-sm text-black/50">{{ field.help_text }}</p>
+			</div>
+			{% if field.field.widget.input_type == 'select' %}
+			<select
+				class="w-full outline-none"
+				name="{{ field.name }}"
+				{% if field.field.required %}
+				required
+				{% endif %}
+			>
+				{% for option in field.field.widget.choices %}
+				<option value="{{ option.0 }}">{{ option.1 }}</option>
+				{% endfor %}
+			</select>
+			{% else %}
+			<label>
+				<input name="{{ field.name }}" type="{{ field.field.widget.input_type }}" class="w-full outline-none border-b-[2px] focus:border-blue-400">
+			</label>
+			{% endif %}	
+		</div>
+		{% endfor %}
+		<button class="px-3 py-2 bg-blue-400 rounded-md shadow-md active:scale-95 active:shadow-none transition-all text-white border">submit</button>
+	</form>
+	<form class="px-3 mt-3" method="post" action="{% url 'account:reset' %}">
+		{% csrf_token %}
+		<button class="px-3 py-2 bg-blue-400 rounded-md shadow-md active:scale-95 active:shadow-none transition-all text-white border">reset</button>
+	</form>
+</div>
+{% endblock %}

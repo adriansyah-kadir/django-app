@@ -48,13 +48,14 @@
 			</div>
 			{% if user.is_authenticated %}
 			<div class="py-5 hover:text-blue-500">
-				<a href="/"><i class="fa-regular fa-gear mr-2"></i>setting</a>
+				<a href="{% url 'core:settings' %}"><i class="fa-regular fa-gear mr-2"></i>setting</a>
 			</div>
 			{% endif %}
 		</nav>
 		<main
 			class="transition peer-checked:bg-black/10 h-screen peer-checked:blur-xl"
 		>
+		{{ user.profile.role }}
 			{% block body %} {% endblock %}
 		</main>
 		<script></script>

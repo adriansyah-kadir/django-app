@@ -1,0 +1,68 @@
+{% extends 'skeleton/base.html'%} {% block body %}
+<div class="h-screen w-screen bg-[#e3e3e3] pt-[15vh]">
+	{% if error %}
+	<dialog class="p-10 box-content bg-blue-400 backdrop:backdrop-blur-sm rounded-sm shadow-md scale-0 transition-all duration-500">
+		{{ error }}
+		<form method="dialog">
+			<button>OK</button>
+		</form>
+	</dialog>
+	<script>
+	setTimeout(()=>{
+		let modal = document.querySelector('dialog')
+		modal.showModal()
+		modal.classList.replace('scale-0', 'scale-100')
+		},300)
+	</script>
+	{% endif %}
+	<form
+		class="bg-white w-[90vw] sm:w-fit sm:p-20 p-10 mx-auto rounded-md shadow-md h-fit"
+		method="post"
+		>
+		<div class="mb-5">
+			<h2 class="text-center text-xl tracking-widest font-bold">Student Form</h2>
+		</div>
+		{% csrf_token %}
+		{% for field in form %}
+			<label>
+				<div
+					class="h-10 flex items-center justify-center max-w-[300px] sm:max-w-[400px] w-[350px] hover:ring-blue-400 [&>i]:hover:text-blue-400 mb-5 relative hover:border-blue-400 m-auto"
+					>
+					{% if field.field.widget.input_type == 'select' %}
+						<div class="w-full h-full flex justify-between items-center rounded-md transition-all hover:border-b-[2px] hover:border-blue-400 border-[1px] overflow-hidden hover:bg-blue-400/5">
+							<div class="text-lg text-black/50 px-1">
+								{{ field.label }}
+							</div>
+							<select class="h-full outline-none" name="{{ field.name }}">
+							{% for f in field.field.widget.choices %}
+								<option value="{{ f.0 }}">{{ f.1 }}</option>
+							{% endfor %}
+							</select>
+						</div>
+					{% else %}
+					<input
+						class="w-full h-full outline-none px-1 placeholder:focus:text-blue-400/75 text-black/90 peer placeholder-shown:border-slate-200 border-b-[2px] border-blue-400 focus:border-blue-400"
+						type="{{ field.field.widget.input_type }}"
+						name="{{ field.name }}"
+						placeholder=" "
+						{% if field.value %}
+						value="{{ field.value }}"
+						{% endif %}
+					/>
+					<div
+						class="absolute top-[-50%] left-1 peer-placeholder-shown:top-[50%] peer-placeholder-shown:translate-y-[-50%] transition-all text-blue-400 text-lg peer-placeholder-shown:text-black/50 peer-focus:text-blue-400"
+						>
+						{{ field.label }}
+					</div>
+			{% endif %}
+				</div>
+			</label>
+		{% endfor %}
+		<button
+			class="h-10 px-3 bg-blue-400 shadow-blue-400 shadow-[0_2px_12px_-3px] rounded-md hover:shadow-[0_0_0_0] transition-all duration-300 scale-105 hover:scale-100 font-bold tracking-wide m-auto mt-10 block text-white"
+			>
+			submit
+		</button>
+	</form>
+</div>
+{% endblock %}
