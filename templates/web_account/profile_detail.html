@@ -1,0 +1,39 @@
+{% extends 'skeleton/base.html' %}
+{% load core %}
+{% block body %}
+<div class="p-3 max-w-xl m-auto">
+	<!-- heading -->
+	<div class="border-b relative">
+		<div class="h-52 bg-gray-300 w-full rounded-[10px_10px_0_0] relative">
+			{% if request.user == object %}
+			<button class="absolute bottom-0 right-0 -translate-x-[calc(100%_/_3)] -translate-y-[calc(100%_/_3)] w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center"><i class="fas fa-camera"></i></button>
+			{% endif %}
+		</div>
+		<!-- profile img --->
+		<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-52 h-52 ring-4 ring-white rounded-full bg-gray-300 flex items-center justify-center">
+			{% if object.profile.img %}
+			<img class="w-full h-full object-cover rounded-full" src="{% media object.profile.img.name %}">
+			{% else %}
+			<i class="fas fa-user text-8xl text-white"></i>
+			{% endif %}
+			{% if request.user == object %}
+			<button class="absolute bottom-0 right-0 -translate-x-[calc(100%_/_3)] -translate-y-[calc(100%_/_3)] w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center"><i class="fas fa-camera"></i></button>
+			{% endif %}
+		</div>
+		<!-- profile img --->
+		<div class="h-52 pt-20 flex flex-col items-center justify-center">
+			<h3 class="text-3xl my-5 font-bold">{{ object }} </h3>
+			<div>
+				<button class="bg-gray-200 py-2 px-5 rounded-md font-bold text-sm"><i class="fas fa-pencil"></i> edit profile</button>
+				<button class="bg-gray-200 py-2 px-5 rounded-md font-bold text-sm"><i class="fas fa-ellipsis"></i></button>
+			</div>
+		</div>
+	</div>
+	<!-- heading -->
+	<ul class="text-black/80 p-3">
+		<li>
+			<i class="far fa-id-card"></i> {{ object.profile.role|capfirst }} <span class="text-sm">({{ object.profile.role_name }})</span>
+		</li>
+	</ul>
+</div>
+{% endblock %}

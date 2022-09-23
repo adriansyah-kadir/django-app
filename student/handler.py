@@ -5,8 +5,9 @@ from .forms import StudentForm
 from core import models
 from core.decorator import require_role
 
+
 class RegisterView(View):
-    template_name = "student/register.html"
+    template_name = "skeleton/form.html"
     ctx = {"form": StudentForm()}
 
     def get(self, req: HttpRequest):
@@ -19,15 +20,13 @@ class RegisterView(View):
             return render(req, self.template_name, self.ctx)
         data = form.cleaned_data
         profile = req.user.profile
-        student = models.Student.objects.create(**data)
-        profile.role_id = student.id
+        student = models.Student.objects.create(profile=profile, **data)
         student.save()
-        profile.save()
-        print(student)
         return redirect("/")
 
     def dispatch(self, request, *args, **kwargs):
-        @require_role(['S'])
+        @require_role(["student"])
         def handler(req, *args, **kwargs):
             return super(type(self), self).dispatch(request, *args, **kwargs)
+
         return handler(request, *args, **kwargs)

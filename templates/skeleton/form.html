@@ -1,0 +1,75 @@
+{% extends 'skeleton/base.html' %}
+{% block body %}
+<div class="min-h-screen bg-[#e3e3e3]">
+	<div class="flex items-center justify-center p-10 font-bold text-lg">
+		{{ title }}
+	</div>
+	{% if form.errors or error %}
+	<dialog class="backdrop:backdrop-blur p-10 box-content scale-0 transition-all duration-300">
+		<form method="dialog" class="flex-col flex items-center justify-center gap-2 rounded-sm">
+			<div class="bg-red-50 rounded-md p-2">
+				{% for t, error in form.errors.items %}
+				<span>{{ t }}:</span>
+				<p class="text-red-400 indent-2">{{ error }}</p>
+				{% endfor %}
+				<div>{{ error }}</div>
+			</div>
+			<button class="px-5 py-1 outline-none bg-blue-400 rounded-md shadow-md active:scale-95 active:shadow-none transition-all text-white border">ok</button>
+		</form>
+	</dialog>
+	<script>
+		let dialog = document.querySelector('dialog')
+		dialog.showModal()
+		dialog.classList.replace('scale-0', 'scale-100')
+	</script>
+	{% endif %}
+	<form class="px-3 max-w-[500px] m-auto" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		{% for field in form %}
+		<div class="bg-white border-t-2 border-blue-400 shadow-md rounded-md box-content p-5 mb-5">
+			<div class="mb-3">
+				<div class="[&_*]:text-red-200 text-sm">
+					{{ field.errors }}
+				</div>
+				<h3 class="text-lg text-black/80">
+					{{ field.label }}
+					{% if field.field.required %}
+					<span class="text-sm text-red-400">*</span>
+					{% endif %}
+				</h3>
+				<p class="text-sm text-black/50">{{ field.help_text }}</p>
+			</div>
+			{% if field.field.widget.input_type == 'select' %}
+			<select
+				class="w-full h-10 rounded-md transition-all duration-300 outline-none border-[1px] hover:border-b-[2px] hover:border-blue-400"
+				name="{{ field.name }}"
+				{% if field.field.required %}
+				required
+				{% endif %}
+			>
+				{% for option in field.field.widget.choices %}
+				<option value="{{ option.0 }}">{{ option.1 }}</option>
+				{% endfor %}
+			</select>
+			{% else %}
+			<label>
+				<input
+					name="{{ field.name }}"
+					type="{{ field.field.widget.input_type }}"
+					class="w-full outline-none border-b-[2px] focus:border-blue-400"
+					{% if field.value  %}
+					value="{{ field.value }}"
+					{% endif %}
+					{% if field.field.required %}
+					required
+					{% endif %}
+					>
+
+			</label>
+			{% endif %}	
+		</div>
+		{% endfor %}
+		<button class="px-3 py-2 bg-blue-400 rounded-md shadow-md active:scale-95 active:shadow-none transition-all text-white border">submit</button>
+	</form>
+</div>
+{% endblock %}

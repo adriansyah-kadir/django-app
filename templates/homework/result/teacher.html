@@ -1,0 +1,21 @@
+{% extends 'skeleton/base.html' %}
+{% block body %}
+<div class="p-3">
+	<details open>
+		<summary>has answered homework (total : {{ students_has_answer|length	 }})</summary>
+		<ul class="px-3">
+			{% for student in students_has_answer %}
+			<li><a class="transition-all hover:shadow-sm h-5 bg-black/10 hover:bg-black/20 rounded-md px-3 py-1" href="{% url 'homework:student_result' homework.id student.id %}">{{ student }} <i class="far fa-arrow-right-from-bracket text-sm text-blue-400"></i></a></li>
+			{% endfor %}
+		</ul>
+	</details>
+	<details>
+		<summary>didnt answered homework (total : {{ students_didnt_answer|length }})</summary>
+		<ul class="px-3">
+			{% for student in students_didnt_answer %}
+			<li class="text-red-400 "><a href="{% url 'account:detail' student.profile.id %}" class="transition-all hover:shadow-sm h-5 bg-black/10 hover:bg-black/20 rounded-md px-3 py-1" >{{ student }}</a></li>
+			{% endfor %}
+		</ul>
+	</details>
+</div>
+{% endblock %}

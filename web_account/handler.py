@@ -10,30 +10,30 @@ from django.contrib.auth import (
 )
 from django.urls.base import reverse
 from django.views import View
+from django.views.generic import DetailView
 from . import forms
-from core import models
+from core import models, decorator
 
 
 class Login(View):
-    template_view = "web_account/login.html"
-    ctx = {"form": forms.UserForm()}
+    template_view = "skeleton/form.html"
 
     def get(self, req: HttpRequest):
-        return render(req, self.template_view, self.ctx)
+        ctx = {"title": "login", "form": forms.UserForm()}
+        return render(req, self.template_view, ctx)
 
     def post(self, req: HttpRequest):
         form = forms.UserForm(req.POST)
+        ctx = {"title": "login", "form": form}
         if not form.is_valid():
-            self.ctx['form'] = form
-            self.ctx['error'] = 'invalid'
-            return self.get(req)
+            ctx["error"] = "invalid"
+            return render(req, self.template_view, ctx)
 
         data = form.cleaned_data
         user = authenticate(username=data["username"], password=data["password"])
         if user == None:
-            self.ctx["form"] = form
-            self.ctx["error"] = "user not found"
-            return render(req, self.template_view, self.ctx)
+            ctx["error"] = "user not found"
+            return render(req, self.template_view, ctx)
 
         auth_login(req, user)
 
@@ -45,21 +45,21 @@ class Login(View):
 
 def logout(req: HttpRequest):
     auth_logout(req)
-    return redirect("/")
+    return redirect(reverse("account:login"))
 
 
 class Register(View):
-    template_view = "web_account/register.html"
-    form = forms.UserForm()
-    ctx = {"form": form}
+    template_view = "skeleton/form.html"
 
     def get(self, req: HttpRequest):
-        return render(req, self.template_view, self.ctx)
+        ctx = {"form": forms.UserForm()}
+        return render(req, self.template_view, ctx)
 
     def post(self, req: HttpRequest):
         form = forms.UserForm(req.POST)
+        ctx = {"form": form}
         if not form.is_valid():
-            return HttpResponseBadRequest("bad request")
+            return render(req, self.template_view, ctx)
 
         data = form.cleaned_data
         try:
@@ -67,9 +67,8 @@ class Register(View):
                 username=data["username"], password=data["password"]
             )
         except Exception as e:
-            self.ctx["error"] = "failed"
-            self.ctx["form"] = form
-            return render(req, self.template_view, self.ctx)
+            ctx["error"] = "user not found"
+            return render(req, self.template_view, ctx)
         auth_login(req, user)
         return redirect(reverse("account:profile"))
 
@@ -89,30 +88,31 @@ class Profile(mixins.LoginRequiredMixin, View):
         data = form.cleaned_data
         profile = models.Profile.objects.create(user=req.user, **data)
         profile.save()
-        if data['role'] == 'T':
-            return redirect(reverse('teacher:register'))
-        if data['role'] == 'S':
-            return redirect(reverse('student:register'))
+        return redirect(profile.get_role_register_url())
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            if request.user.profile != None: return redirect("/")
+            if request.user.profile != None:
+                return redirect("/")
         except AttributeError as e:
             print(e)
         return super().dispatch(request, *args, **kwargs)
 
 
 def reset(req: HttpRequest):
-    try:
-        profile = req.user.profile
-    except Exception:
-        profile = None
-    print(profile)
-    if profile != None:
-        if profile.role_id:
-            profile.role_id = None
-            profile.save()
-        else:
-            profile.delete()
-            return redirect("/")
-    return redirect("/")
+    pass
+
+
+class Detail(mixins.LoginRequiredMixin, DetailView):
+    model = models.User
+    template_name = "web_account/profile_detail.html"
+
+
+class SettingView(mixins.LoginRequiredMixin, View):
+    template_name = "settings.html"
+
+    def get(self, req: HttpRequest):
+        return render(req, self.template_name)
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)

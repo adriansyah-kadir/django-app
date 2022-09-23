@@ -16,60 +16,32 @@ class Middleware:
         return self.next(req)
 
     def get_nav_links(self, req: HttpRequest):
-        nav = [
-            {
-                "name": "ACCOUNT",
-                "links": [
-                    {
-                        "url": reverse("account:login"),
-                        "name": "login",
-                        "icon": '<i class="fa-regular fa-right-to-bracket"></i>',
-                    },
-                    {
-                        "url": "/accounts/register/",
-                        "name": "register",
-                        "icon": '<i class="fa-regular fa-circle-user"></i>',
-                    },
-                ]
-                if req.user.is_authenticated == False
-                else [
-                    {
-                        "url": reverse("account:logout"),
-                        "name": "logout",
-                        "icon": '<i class="fa-regular fa-right-from-bracket"></i>',
-                    }
-                ],
-            }
-        ]
+        nav = []
         return nav
 
     def get_class_links(self, req: HttpRequest):
         try:
             profile = req.user.profile
             links = [
-                {
-                    'url': reverse('class:register'),
-                    'name': 'add class'
-                },
+                {"url": reverse("class:register"), "name": "add class"},
             ]
-            if profile.role == 'T':
+            if profile.role == "teacher":
                 links += [
                     {
-                        'url': reverse('class:detail', args=[c.id]),
-                        'name': c.class_name,
-                    } for c in req.user.profile.get_role_model().class_set.all()
+                        "url": reverse("class:detail", args=[c.id]),
+                        "name": c.class_name,
+                    }
+                    for c in req.user.profile.teacher.class_set.all()
                 ]
-            elif profile.role == 'S':
-                links += [
+            elif profile.role == "student":
+                links += [{"url": reverse("class:requests"), "name": "requests"}] + [
                     {
-                        'url': reverse('class:detail', args=[c.id]),
-                        'name': c.class_name,
-                    } for c in req.user.profile.get_role_model().student_class.all()
+                        "url": reverse("class:detail", args=[c.id]),
+                        "name": c.class_name,
+                    }
+                    for c in req.user.profile.student.class_accepted.all()
                 ]
-            return [{
-                'name': 'CLASS',
-                'links': links
-            }]
+            return [{"name": "CLASS", "links": links}]
         except Exception as e:
             print(e)
         return []

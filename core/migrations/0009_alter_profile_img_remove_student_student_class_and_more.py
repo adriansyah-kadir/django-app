@@ -6,22 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0008_profile_img'),
+        ("core", "0008_profile_img"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='img',
-            field=models.ImageField(blank=True, null=True, upload_to='profile'),
+            model_name="profile",
+            name="img",
+            field=models.ImageField(blank=True, null=True, upload_to="profile"),
         ),
         migrations.RemoveField(
-            model_name='student',
-            name='student_class',
+            model_name="student",
+            name="student_class",
         ),
         migrations.AddField(
-            model_name='student',
-            name='student_class',
-            field=models.ManyToManyField(to='core.class'),
+            model_name="student",
+            name="student_class",
+            field=models.ManyToManyField(to="core.class"),
         ),
     ]

@@ -1,0 +1,34 @@
+{% extends 'skeleton/base.html'	%}
+{% load core %}
+{% block body %}
+<div class="p-3 flex flex-col gap-3">
+	<h2 class="text-4xl font-bold my-5 text-center">Class Member</h2>
+	{% if object_list|length < 1 %}
+	<h3 class="text-center text-xl">NO MEMBER</h3>
+	{% endif %}
+	{% for student in object_list %}
+	<div class="flex items-center gap-3">
+		<div class="w-20 h-20 bg-gray-300 rounded-full overflow-hidden flex items-center justify-center">
+			{% if student.profile.img %}
+			<img class="w-full h-full object-cover" src="{% media student.profile.img.name %}">
+			{% else %}
+			<i class="fas fa-user text-5xl text-white"></i>
+			{% endif %}
+		</div>
+		<div class="flex flex-col gap-2">
+			<h3 class="text-xl font-bold tracking-wide">{{ student }}</h3>
+			<div class="">
+				<a href="{% url 'account:detail' student.profile.user.id %}">
+					<button class="w-32 p-1 rounded-md bg-blue-500 text-white">info</button>
+				</a>
+				<form class="inline-block" method="post" action="{% url 'class:remove_student' class.id %}?next={% url 'class:students' class.id %}">
+					{% csrf_token %}
+					<input type="hidden" name="student" value="{{ student.id }}">
+					<button class="w-32 p-1 rounded-md bg-gray-200">remove</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

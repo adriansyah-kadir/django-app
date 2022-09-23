@@ -2,6 +2,7 @@ from django.http import HttpRequest
 from django.urls.base import reverse
 from core.models import Class, Teacher
 
+
 class Middleware:
     def __init__(self, next):
         self.next = next
@@ -25,7 +26,7 @@ class Middleware:
         #         {
         #             'name': 'Class',
         #             'links': links
-        #         }        
+        #         }
         #     ]
         # except Exception as e:
         #     print(e)

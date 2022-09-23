@@ -1,0 +1,45 @@
+{% extends 'skeleton/base.html' %}
+{% load core %}
+{% block body %}
+<div class="pt-5">
+	<div class="w-80 h-60 bg-blue-400 rounded-tr-full rounded-br-full overflow-hidden shadow-md border-2 border-l-0 border-slate-200">
+		{% if object.img %}
+		<img class="w-full h-full object-cover" src="{% media object.img.name %}">
+		{% endif %}
+	</div>
+	<div class="px-2 max-w-lg m-auto">
+		<div class="sm:flex items-center">
+			<h1 class="text-8xl my-10 mr-5">{{ object.class_name }}</h1>
+			<div>
+				<h4 class="text-2xl">{{ object.excerpt }}</h4>
+				<small class="text-black/50">teacher: <a href="{% url 'account:detail' object.teacher.profile.user.id %}" class="underline">{{ object.teacher }}</a></small>
+			</div>
+		</div>
+		<div class="my-5 flex flex-wrap gap-2">
+			{% if object.teacher == request.user.profile.teacher %}
+			<a class="btn" href="{% url 'class:class_requests' object.id %}">requests</a>
+			<a class="btn" href="{% url 'class:students' object.id %}">member</a>
+			{% else %}
+				{% if object in user.profile.student.class_accepted.all %}
+				<a class="btn" href="{% url 'class:remove_student' object.id %}">exit class</a>
+				{% elif object in user.profile.student.class_request.all %}
+				<a class="btn" href="{% url 'class:remove_student' object.id %}">
+					cancel request
+				</a>
+				{% else %}
+				<form method="post" action="{% url 'class:register' %}">
+					{% csrf_token %}
+					<input class="hidden" name="class_choices" value="{{ object.id }}">
+					<button class="btn">join</button>
+				</form>
+				{% endif %}
+			{% endif %}
+			<form action="{% url 'homework:index' %}">
+				<input type="hidden" name="class" value="{{ object.id }}">
+				<button class="btn">homework</button>
+			</form>
+		</div>
+		<p class="text-xl indent-5 my-5">{{ object.description }}</p>
+	</div>
+</div>
+{% endblock %}

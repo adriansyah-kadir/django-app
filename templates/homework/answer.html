@@ -1,0 +1,39 @@
+{% extends 'skeleton/base.html' %}
+{% block body %}
+<div class="p-5">
+	<h2 class="h-20 flex items-center justify-center text-xl">
+	{{ homework }}
+	</h2>
+	{% if has_answered_homework  %}
+	<p>
+		you already answered this homework
+	</p>
+	<p>
+	{{ homework.description|default:"" }}
+	</p>
+	<a href="{% url 'homework:result' homework.id %}">
+		<button class="btn">check result</button>
+	</a>
+	{% else %}
+	<form method="post" class="px-4">
+		{% csrf_token %}
+		{% for question in homework.question_set.all %}
+		<label for="{{ question.id }}">
+			{{ forloop.counter }}. {{ question }}
+		</label>
+		<ol class="px-1 list-inside list-[upper-alpha]">
+			{% for answer in question.answer_set.all %}
+			<li>
+			<label for="{{ question.id }}">
+				{{ answer }}
+			</label>
+			<input id="{{ question.id }}" type="radio" name="{{ question.id }}" value="{{ answer.id }}">
+			</li>
+			{% endfor %}
+		</ol>
+		{% endfor %}
+		<button class="btn">send</button>
+	</form>
+	{% endif %}
+</div>
+{% endblock %}

@@ -8,30 +8,29 @@ from core.decorator import require_role
 
 import teacher
 
+
 class Register(mixins.LoginRequiredMixin, views.View):
-    template_name = 'teacher/register.html'
-    ctx = {
-        'form': forms.TeacherForm()
-    }
+    template_name = "skeleton/form.html"
+    ctx = {"form": forms.TeacherForm()}
+
     def get(self, req: HttpRequest):
         return render(req, self.template_name, self.ctx)
 
     def post(self, req: HttpRequest):
         form = forms.TeacherForm(req.POST, req.FILES)
         if not form.is_valid():
-            self.ctx['error'] = 'validation error'
+            self.ctx["error"] = "validation error"
             return self.get(req)
 
         data = form.cleaned_data
         profile = req.user.profile
-        teacher = models.Teacher.objects.create(**data)
-        profile.role_id = teacher.id
+        teacher = models.Teacher.objects.create(profile=profile, **data)
         teacher.save()
-        profile.save()
         return redirect("/")
-    
+
     def dispatch(self, request, *args, **kwargs):
-        @require_role(['T'])
+        @require_role(["teacher"])
         def handler(req, *args, **kwargs):
             return super(type(self), self).dispatch(request, *args, **kwargs)
+
         return handler(request, *args, **kwargs)

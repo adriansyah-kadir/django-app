@@ -1,0 +1,90 @@
+{% extends 'skeleton/base.html' %}
+{% block body %}
+<h2 class="text-center text-4xl py-5">homework</h2>
+<ul class="flex flex-wrap items-center justify-center gap-3">
+	{% for homework in object_list %}
+	{% if homework.done or request.user.profile.role == 'teacher' %}
+	<li>
+		<a href="{% url 'homework:detail' homework.id %}">
+			<div class="transition-all duration-300 w-40 h-16 border p-3 rounded-md hover:bg-blue-50 hover:border-blue-400 flex gap-3 items-center relative [&>.nav]:hover:-translate-y-full [&>.nav]:hover:opacity-100 [&>.nav]:hover:shadow-md shadow-lg hover:shadow-none">
+				<h4>
+					{{ homework }}
+				</h4>
+				<div class="flex flex-col child:text-[10px] child:text-black/50">
+					{% if not homework.is_expire %}
+					<small>
+						{{ homework.time_to_expire }} before result
+					</small>
+					{% else %}
+						{% if homework.done %}
+						<small>done</small>
+						{% else %}
+						<small>expire</small>
+						{% endif %}
+					{% endif %}
+					<small>
+						created {{ homework.created }} ago
+					</small>
+				</div>
+				{% if request.user.profile.role == 'teacher' %}
+				<div class="absolute top-[-10%] -translate-y-[200%] left-0 w-full h-full rounded-md nav transition-all ease-in-out opacity-0 shadow-none bg-gray-50 border flex flex-wrap items-center p-3 gap-3">
+					<form method="post" action="{% url 'homework:delete' %}">
+						{% csrf_token %}
+						<input name="homework" value="{{ homework.id }}" type="hidden">
+						<button class="peer"><i class="fas fa-circle-x"></i></button>
+						<div class="peer-hover:translate-y-1 peer-hover:top-full peer-hover:opacity-100  w-full h-min transition-all duration-300 opacity-0 absolute top-full left-0 bg-white px-3 rounded-sm shadow-md text-sm">delete homework</div>
+					</form>
+					{% if not homework.done %}
+					<form method="post" action="{% url 'homework:done' %}">
+						{% csrf_token %}
+						<input name="homework" value="{{ homework.id }}" type="hidden">
+						<button class="peer"><i class="fas fa-circle-check"></i></button>
+						<div class="peer-hover:translate-y-1 peer-hover:top-full peer-hover:opacity-100  w-full h-min transition-all duration-300 opacity-0 absolute top-full left-0 bg-white px-3 rounded-sm shadow-md text-sm">submit homework</div>
+					</form>
+					{% endif %}
+				</div>
+				{% endif %}
+			</div>
+		</a>
+	</li>
+	{% endif %}
+	{% endfor %}
+{% if request.user.profile.role == 'teacher' %}
+	<li>
+		<div id="add-homework" class="transition-all duration-300 w-40 h-16 border p-3 rounded-md hover:bg-blue-50 hover:border-blue-400 flex gap-3 items-center relative [&>.nav]:hover:-translate-y-full [&>.nav]:hover:opacity-100 [&>.nav]:hover:shadow-md justify-center [&>*]:hover:text-blue-400 shadow-lg hover:shadow-none">
+					<i class="far text-slate-300 fa-circle-plus"></i>
+				<dialog class="overflow-visible backdrop:backdrop-blur-lg">
+					<form method="dialog" class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 outline-none">
+						<button><i class="fas fa-circle-x text-xl text-red-400"></i></button>
+					</form>
+					<h3 class="text-center text-xl">HomeWork Form</h3>
+					<form class="form" action="{% url 'homework:register' %}" method="post">
+						{% csrf_token %}
+						<input class="hidden" name="class" value="{{ class.id }}">
+						<div class="field">
+							<h3 class="label">name:</h3>
+							<input tabindex="1" name="name" class="input" required>
+						</div>
+						<div class="field">
+							<h3 class="label">description:</h3>
+							<input tabindex="2" name="description" class="input">
+						</div>
+						<div class="field">
+							<h3 class="label">expire:</h3>
+							<input tabindex="3" name="expire" class="input" type="date" required>
+						</div>
+						<button tabindex="4" class="btn">add homework</button>
+					</form>
+				</dialog>
+			</div>
+	</li>
+{% endif %}
+</ul>
+<script>
+	let add_homework = document.getElementById("add-homework")
+	add_homework.onclick = ev => {
+			let dialog = document.querySelector("dialog")
+			dialog.showModal()
+		}
+</script>
+{% endblock %}

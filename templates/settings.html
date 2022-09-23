@@ -1,4 +1,9 @@
 {% extends 'skeleton/base.html' %}
+{% load core %}
 {% block body %}
-
+{% if request.user.profile %}
+	{% if request.user.profile.img %}
+	<img src="{% media request.user.profile.img.name %}"
+	{% endif %}
+{% endif %}
 {% endblock %}

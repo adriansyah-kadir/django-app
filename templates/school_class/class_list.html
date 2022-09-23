@@ -1,0 +1,19 @@
+{% extends 'skeleton/base.html' %}
+{% block body %}
+<div class="p-5">
+	<ul>
+	{% for class in object_list %}
+	<li class="flex items-center justify-between border-y">
+		<a href="{% url 'class:detail' class.id %}">
+			<h3>
+				{{ class }}
+			</h3>
+			<a href="{% url 'class:delete' class.id %}">
+					<button class="btn">cancel request</button>
+				</a>
+		</a>
+	</li>
+	{% endfor %}
+	</ul>
+</div>
+{% endblock %}

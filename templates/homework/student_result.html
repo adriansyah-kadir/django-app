@@ -1,0 +1,47 @@
+
+{% extends 'skeleton/base.html' %}
+{% load core %}
+{% block body %}
+<div class="p-5">
+	<h2 class="text-4xl my-2">
+		homework {{ homework }}
+	</h2>
+	<p>
+		{{ homework.description|default:"" }}
+	</p>
+	<h3>
+		total question {{ homework.question_set.all|length }}
+	</h3>
+	<h3>
+		right question {{ homeworkanswer.right_answer|length }}
+	</h3>
+	<p>
+		<i class="fa-solid fa-circle-check text-green-400"></i> : right answer
+		<br>
+		<i class="fas fa-circle-x"></i> : selected answer
+	</p>
+		<ol>
+		{% for question in homework.question_set.all %}
+			<li>
+				<h4 class="text-xl">
+					{{ forloop.counter }}. {{ question }}
+				</h4>
+			<ol class="list-inside list-[upper-alpha] px-3">
+			{% for answer in question.answer_set.all %}
+				<li >
+					{{ answer }}
+				{% if  answer.is_true %}
+					<i class="fa-solid fa-circle-check text-green-400"></i>
+				{% endif %}
+				{% call homeworkanswer "selected_answer" question as selected	%}
+				{% if selected == answer %}
+				<i class="fas fa-circle-x"></i>
+				{% endif %}
+				</li>
+			{% endfor %}
+			</ol>
+			</li>
+		{% endfor %}
+		</ol>
+</div>
+{% endblock %}

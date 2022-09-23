@@ -1,0 +1,40 @@
+{% extends 'skeleton/base.html' %}
+{% load core %}
+{% block body %}
+<div class="p-3">
+	<div class="py-5">
+		<h2 class="text-center text-4xl"> {{ homework }}</h2>
+		<p> {{ homework.description|default:"" }} </p>
+	</div>
+	<p class="my-4">
+		<small>total question: {{ homework.question_set.all|length }}</small>
+		<br>
+		<small>right question: {{ homeworkanswer.right_answer|length }}</small>
+	</p>
+	<ol class="flex flex-col gap-3 items-center">
+		{% for question in homework.question_set.all %}
+		<li class="transition-all duration-300 shadow-md hover:shadow-none rounded-md p-3 border hover:bg-black/5 max-w-lg w-full">
+			<h4 class="text-xl bg-gray-200 p-2 rounded-sm mb-2">
+				{{ forloop.counter }}. {{ question }}
+			</h4>
+			<ol class="list-inside list-[upper-alpha] px-3 text-sm">
+				{% for answer in question.answer_set.all %}
+				<li >
+					{{ answer }}
+					{% if  answer.is_true %}
+					<i class="fa-solid fa-circle-check text-green-400"></i>
+					{% endif %}
+					{% call homeworkanswer "selected_answer" question as selected	%}
+					{% if selected == answer %}
+						{% if not selected.is_true %}
+							<i class="fas fa-circle-x text-red-400"></i>
+						{% endif %}
+					{% endif %}
+				</li>
+				{% endfor %}
+			</ol>
+		</li>
+		{% endfor %}
+	</ol>
+</div>
+{% endblock %}

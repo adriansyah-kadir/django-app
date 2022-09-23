@@ -1,0 +1,90 @@
+{% extends 'skeleton/base.html' %}
+{% load core %}
+{% block body %}
+<div class="p-5">
+	<div class="mb-2">
+		<h2 class="h-10 text-2xl flex items-center justify-center">{{ homework }}</h2>
+		<p class="indent-5">{{ homework.description|default:"" }}</p>
+		<small>total question {{ homework.question_set.all|length }}</small>
+	</div>
+	{% if request.user.profile.role == 'student' %}
+		{% if homework.done %}
+			{% call request.user.profile.student "has_answered_homework" homework=homework as has_answered_homework %}
+			{% if has_answered_homework %}
+			<a href="{% url 'homework:result' homework.id %}"><button class="btn">result</button></a>
+			{% else %}
+				{% if homework.is_expire %}
+				<strong>you not answer this homework</strong>
+				{% else %}
+				<a href="{% url 'homework:start' homework.id %}"><button class="btn">start</button></a>
+				{% endif %}
+			{% endif %}
+		{% endif %}
+	{% elif request.user.profile.role == 'teacher' %}
+		{% if homework.done %}
+		<a class="btn" href="{% url 'homework:result' homework.id %}">
+			results
+		</a>
+		{% else %}
+		<form class="form" action="{% url 'question:register' %}" method="post">
+			<input class="input" type="hidden" name="homework" value="{{ homework.id }}">
+			<label for="input-question">
+				question text:
+			</label>
+			<input id="input-question" class="input" name="text">
+			<button class="btn">add</button>
+		</form>
+		{% endif %}
+		<ol class="my-2">
+		{% for question in homework.question_set.all %}
+			<li>
+				<div class="flex items-center justify-between text-xl">
+					{{ forloop.counter }}. {{ question }}
+					{% if not homework.done %}
+					<form method="post" action="{% url 'question:delete' %}">
+						{% csrf_token %}
+						<input type="hidden" name="question" value="{{ question.id }}">
+						<button class="btn">delete</button>
+					</form>
+					{% endif %}
+				</div>
+				<ol class="px-2 mb-5">
+			{% for answer in question.answer_set.all %}
+					<li class="flex items-center justify-between">
+						<div class="text-sm">
+							{% char forloop.counter0	%}. {{ answer }}
+							{% if answer.is_true %}
+							<i class="fa-solid fa-circle-check text-green-400"></i>
+							{% endif %}
+						</div>
+						{% if not homework.done %}
+						<form action="{% url 'question:answer_delete' %}" method="post">
+							{% csrf_token	%}
+							<input type="hidden" name="answer" value="{{ answer.id }}">
+							<button class="btn">delete</button>
+						</form>
+						{% endif %}
+					</li>
+			{% endfor %}
+				</ol>
+				{% if not homework.done %}
+				<form class="form" action="{% url 'question:answer' %}" method="post">
+					{% csrf_token %}
+					<input class="input" type="hidden" name="question" value="{{ question.id }}">
+					<label for="input-box">
+						text:
+					</label>
+					<input id="input-box" class="input" name="text">
+					<label>
+						is_true
+					</label>
+					<input type="checkbox" name="is_true">
+					<button class="btn">add answer</button>
+				</form>
+				{% endif %}
+			</li>
+		{% endfor %}
+		</ol>
+	{% endif %}
+</div>
+{% endblock	%}
